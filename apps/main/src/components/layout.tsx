@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { ChevronUpIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { useCart } from "cart/cart-store";
 import dynamic from "next/dynamic";
 import NextProgress from "next-progress";
@@ -15,7 +15,32 @@ export const Layout = ({ children }: LayoutProps) => {
       <Header />
       <main className="h-auto min-h-[calc(100%-160px)] py-8">{children}</main>
       <Footer />
+      <BackToTop />
     </>
+  );
+};
+
+const BackToTop = () => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 300);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <button
+      type="button"
+      aria-label="Back to top"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="fixed z-10 p-3 text-white bg-black rounded-full shadow-lg bottom-6 right-6 hover:bg-gray-800"
+    >
+      <ChevronUpIcon className="w-6 h-6" />
+    </button>
   );
 };
 
